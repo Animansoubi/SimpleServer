@@ -1,0 +1,218 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is a sample server. For this sample, you can use the 4 api that create models and insert into models and get list of documantion and filter that.",
+    "version": "1.0.0",
+    "title": "Swagger simpleServer",
+    "contact": {
+      "email": "apiteam@swagger.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "host": "petstore.swagger.io",
+  "basePath": "/v2",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/model": {
+      "post": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "Add a new pet to the store",
+        "description": "",
+        "operationId": "insertModel",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Pet object that needs to be added to the store",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Model"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success/Error Message",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            }
+          }
+        }
+      }
+    },
+    "/insert/{model}": {
+      "post": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "Add a new pet to the store",
+        "description": "",
+        "operationId": "insertObject",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "model",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/Object"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success/Error Message",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            }
+          }
+        }
+      }
+    },
+    "/list/{model}": {
+      "get": {
+        "parameters": [
+          {
+            "name": "model",
+            "in": "path",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success/Error Message",
+            "schema": {
+              "$ref": "#/definitions/ResultResponse"
+            }
+          }
+        }
+      }
+    },
+    "/filter/{model}/{key}/{value}": {
+      "get": {
+        "parameters": [
+          {
+            "name": "model",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "key",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "value",
+            "in": "path",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success/Error Message",
+            "schema": {
+              "$ref": "#/definitions/ResultResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Object": {
+      "type": "object"
+    },
+    "Model": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "fields": {
+          "$ref": "#/definitions/Fields"
+        }
+      }
+    },
+    "Fields": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Field"
+      }
+    },
+    "Field": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "ResultResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "result": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Result"
+          }
+        }
+      }
+    },
+    "Result": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Object"
+      }
+    },
+    "Response": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
