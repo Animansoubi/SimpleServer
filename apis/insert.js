@@ -19,18 +19,15 @@ function provide(router) {
         var isBodyError = false;
         db.model.findOne({name: collectionName}, function (err, doc) {
             if (err) {
-                console.log("1")
                 client.send(response.DB_ERROR);
             } else {
                 for (var index in doc.fields) {
-                    console.log(doc.fields[index]);
                     if (doc.fields[index].required) {
                         if (body[doc.fields[index].name] == null || !validateTypeFormat(doc.fields[index].type, body[doc.fields[index].name])) {
                             {
                                 isBodyError = true;
                                 break;
                             }
-
                         }
                     }
                 }
@@ -39,8 +36,9 @@ function provide(router) {
                     db.collection(collectionName).insert(body, function (err) {
                         if (err) {
                             console.log("2");
-                            client.send(response.DB_ERROR);
-                        } else {
+                            client.send(response.USER_ALREADY_EXIST);
+                        }
+                        else {
                             var object_id = req.body._id;
                             var returnResponse = response.SUCCESS_INSERT;
                             returnResponse.objectId = object_id;
@@ -48,7 +46,6 @@ function provide(router) {
                         }
                     })
                 } else {
-                    console.log("3");
                     client.send(response.BAD_BODY_ERROR);
                 }
             }
@@ -58,14 +55,11 @@ function provide(router) {
 
     function validateTypeFormat(item, value) {
         var itemType = typeof item;
+        //console.log(itemType);
         var valueType = typeof value;
-        // if (valueType === 'undefined')
-        //     return true;
+        //console.log(valueType);
         return itemType == valueType;
     }
-
 }
 
 exports.provide = provide;
-
-

@@ -19,5 +19,7 @@ exports.DB_ERROR_EMPTY = {code: -401, message: 'هیچ موردی یافت نش�
 
 exports.MODEL_ALREADY_EXIST = {code: -404, message: 'چنین مدلی قبلا وارد شده است'};
 
+exports.USER_ALREADY_EXIST = {code: -404, message: 'چنین کاربری قبلا وارد شده است'};
+
 exports.MAIN_API_URL = '/api-v.1';
 
