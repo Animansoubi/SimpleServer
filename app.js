@@ -4,6 +4,7 @@ var router = require("./common/router");
 var config = require("./common/const");
 var express = require('express');
 var bodyParser = require('body-parser');
+var fs = require('fs');
 var app = express();
 var mongojs = require('mongojs');
 var db = mongojs('mongodb://localhost/SimpleServer', []);

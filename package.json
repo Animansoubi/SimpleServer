@@ -7,7 +7,8 @@
     "mongoose": "latest",
     "body-parser": "latest",
     "mongodb": "latest",
-    "mongojs": "latest"
+    "mongojs": "latest",
+    "fs": "latest"
   },
   "devDependencies": {
     "swagger-markdown": "^1.1.1"
