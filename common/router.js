@@ -5,16 +5,19 @@
 var express = require("express");
 var router = express.Router();
 
-var clientModel = require("../apis/model");
-clientModel.provide(router);
+var model = require("../apis/model");
+model.provide(router);
 
-var personInsert = require("../apis/insert");
-personInsert.provide(router);
+var insert = require("../apis/insert");
+insert.provide(router);
 
-var personList = require("../apis/list");
-personList.provide(router);
+var list = require("../apis/list");
+list.provide(router);
 
-var personFilter = require("../apis/filter");
-personFilter.provide(router);
+var filter = require("../apis/filter");
+filter.provide(router);
+
+var show = require("../apis/show");
+show.provide(router);
 
 module.exports = router;
