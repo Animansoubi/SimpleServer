@@ -3,7 +3,7 @@
  */
 
 var response = require("../common/const");
-var encrytDecrypt = require("../common/encryption");
+var encrytDecrypt = require("../common/decrypt");
 var fs = require('fs');
 var mongojs = require('mongojs');
 var db = mongojs('mongodb://localhost/SimpleServer');
@@ -20,64 +20,65 @@ function provide(router) {
     } catch (e) {
         console.log(e);
     }
+}
 
-    function mainHandler(req, res) {
-        client = res;
-        body = req.body;
-        collectionName = req.params.collectionName;
-        isBodyError = false;
-        db.model.findOne({name: collectionName}, findCollectionNameCallBack);
-    }
+function mainHandler(req, res) {
+    client = res;
+    body = req.body;
+    console.log(body.username)
+    console.log(body.password)
+    console.log(body.file)
+    collectionName = req.params.collectionName;
+    isBodyError = false;
+    db.model.findOne({name: collectionName}, findCollectionNameCallBack);
+}
 
-    function findCollectionNameCallBack(err, doc) {
-        try {
-            if (err) {
-                client.send(response.DB_ERROR, "document not find");
-            } else {
-                for (var index in doc.fields) {
-                    if (doc.fields[index].required) {
-                        if (body[doc.fields[index].name] == null || !validateTypeFormat(doc.fields[index].type, body[doc.fields[index].name])) {
-                            {
-                                isBodyError = true;
-                                break;
-                            }
+function findCollectionNameCallBack(err, doc) {
+    try {
+        if (err) {
+            client.send(response.DB_ERROR, "document not find");
+        } else {
+            for (var index in doc.fields) {
+                if (doc.fields[index].required) {
+                    if (body[doc.fields[index].name] == null || !validateTypeFormat(doc.fields[index].type, body[doc.fields[index].name])) {
+                        {
+                            isBodyError = true;
+                            break;
                         }
-                    }
-                    if (doc.fields[index].type == file) {
-                        // convert image to base64 encoded string
-                        var base64str = base64_encode(file);
-                        console.log(base64str);
                     }
                 }
-                if (!isBodyError) {
-                    // Insert to collection with name of collectionName
-                    db.collection(collectionName).insert(body, function (err) {
-                        if (err) {
-                            console.log("2");
-                            client.send(response.USER_ALREADY_EXIST);
-                        }
-                        else {
-                            var object_id = body._id;
-                            var returnResponse = response.SUCCESS_INSERT;
-                            returnResponse.objectId = object_id;
-                            client.send(returnResponse);
-                        }
-                    })
-                } else {
-                    client.send(response.BAD_BODY_ERROR);
+                if (doc.fields[index].type == "file") {
+                    var base64str = body[doc.fields[index].file];
+                    base64_decode(base64str, 'copy.jpg');
                 }
             }
-        } catch (e) {
-            console.log(e);
+            if (!isBodyError) {
+                // Insert to collection with name of collectionName
+                db.collection(collectionName).insert(body, function (err) {
+                    if (err) {
+                        client.send(response.USER_ALREADY_EXIST);
+                    }
+                    else {
+                        var object_id = body._id;
+                        var returnResponse = response.SUCCESS_INSERT;
+                        returnResponse.objectId = object_id;
+                        client.send(returnResponse);
+                    }
+                })
+            } else {
+                client.send(response.BAD_BODY_ERROR);
+            }
         }
+    } catch (e) {
+        console.log(e);
     }
+}
 
-    function validateTypeFormat(item, value) {
-        var itemType = typeof item;
-        //console.log(itemType);
-        var valueType = typeof value;
-        //console.log(valueType);
-        return itemType == valueType;
-    }
+function validateTypeFormat(item, value) {
+    var itemType = typeof item;
+    //console.log(itemType);
+    var valueType = typeof value;
+    //console.log(valueType);
+    return itemType == valueType;
 }
 exports.provide = provide;

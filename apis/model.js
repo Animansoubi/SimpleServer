@@ -1,6 +1,3 @@
-/**
- *  Created by anahid on 8/4/17.
- */
 var response = require("../common/const");
 
 var mongojs = require('mongojs');

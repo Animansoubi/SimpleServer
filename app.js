@@ -8,7 +8,8 @@ var fs = require('fs');
 var app = express();
 var mongojs = require('mongojs');
 var db = mongojs('mongodb://localhost/SimpleServer', []);
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 
 var port = process.env.PORT || 3001;

@@ -17,5 +17,3 @@ function base64_decode(base64str, file) {
     console.log('**** File created from base64 encoded string ****');
 }
 
-// convert base64 string back to image
-//     base64_decode(base64str, 'copy.jpg');

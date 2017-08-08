@@ -17,7 +17,7 @@ function provide(router) {
                     res.send({code: 0, result: docs});
                 }
             });
-        }catch (e){
+        } catch (e) {
             console.log(response.GENERAL_ERROR);
         }
     });

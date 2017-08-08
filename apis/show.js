@@ -3,7 +3,7 @@
  */
 
 var response = require("../common/const");
-
+var url = require('url');
 var mongojs = require('mongojs');
 var db = mongojs('mongodb://localhost/SimpleServer');
 
@@ -15,10 +15,8 @@ var collectionName = null;
 function provide(router) {
     router.get("/show/:collectionName", function (req, res) {
         client = res;
-        body = req.body;
         collectionName = req.params.collectionName;
-        objectId = req.params["objectId"];
-        console.log(objectId);
+        var objectId = req.query.id;
         db.collection(collectionName).find({}, function (err, docs) {
             if (err) {
                 client.send(response.DB_ERROR);
