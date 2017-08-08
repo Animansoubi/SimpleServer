@@ -3,11 +3,9 @@
  */
 
 var response = require("../common/const");
-var encrytDecrypt = require("../common/decrypt");
 var fs = require('fs');
 var mongojs = require('mongojs');
 var db = mongojs('mongodb://localhost/SimpleServer');
-var model = require("../apis/model");
 
 var client = null;
 var body = null;
@@ -25,9 +23,9 @@ function provide(router) {
 function mainHandler(req, res) {
     client = res;
     body = req.body;
-    console.log(body.username)
-    console.log(body.password)
-    console.log(body.file)
+    console.log(body.username);
+    console.log(body.password);
+    // console.log(body.file);
     collectionName = req.params.collectionName;
     isBodyError = false;
     db.model.findOne({name: collectionName}, findCollectionNameCallBack);
@@ -39,6 +37,7 @@ function findCollectionNameCallBack(err, doc) {
             client.send(response.DB_ERROR, "document not find");
         } else {
             for (var index in doc.fields) {
+                console.log(doc.fields);
                 if (doc.fields[index].required) {
                     if (body[doc.fields[index].name] == null || !validateTypeFormat(doc.fields[index].type, body[doc.fields[index].name])) {
                         {
@@ -48,7 +47,7 @@ function findCollectionNameCallBack(err, doc) {
                     }
                 }
                 if (doc.fields[index].type == "file") {
-                    var base64str = body[doc.fields[index].file];
+                    var base64str = body.file;
                     base64_decode(base64str, 'copy.jpg');
                 }
             }
@@ -81,4 +80,11 @@ function validateTypeFormat(item, value) {
     //console.log(valueType);
     return itemType == valueType;
 }
+
+function base64_decode(base64str, file) {
+    var bitmap = new Buffer(base64str, 'base64');
+    fs.writeFileSync(file, bitmap);
+    console.log('**** File created from base64 encoded string ****');
+}
+
 exports.provide = provide;
