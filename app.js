@@ -4,13 +4,13 @@ var router = require("./common/router");
 var config = require("./common/const");
 var express = require('express');
 var bodyParser = require('body-parser');
+var path = require('path');
 var fs = require('fs');
 var app = express();
 var mongojs = require('mongojs');
 var db = mongojs('mongodb://localhost/SimpleServer', []);
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({ extended: true }));
-
 
 var port = process.env.PORT || 3001;
 

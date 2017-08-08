@@ -11,6 +11,7 @@ var client = null;
 var body = null;
 var collectionName = null;
 var isBodyError = null;
+var object_id = null;
 
 function provide(router) {
     try {
@@ -23,9 +24,6 @@ function provide(router) {
 function mainHandler(req, res) {
     client = res;
     body = req.body;
-    console.log(body.username);
-    console.log(body.password);
-    // console.log(body.file);
     collectionName = req.params.collectionName;
     isBodyError = false;
     db.model.findOne({name: collectionName}, findCollectionNameCallBack);
@@ -37,7 +35,6 @@ function findCollectionNameCallBack(err, doc) {
             client.send(response.DB_ERROR, "document not find");
         } else {
             for (var index in doc.fields) {
-                console.log(doc.fields);
                 if (doc.fields[index].required) {
                     if (body[doc.fields[index].name] == null || !validateTypeFormat(doc.fields[index].type, body[doc.fields[index].name])) {
                         {
@@ -45,10 +42,6 @@ function findCollectionNameCallBack(err, doc) {
                             break;
                         }
                     }
-                }
-                if (doc.fields[index].type == "file") {
-                    var base64str = body.file;
-                    base64_decode(base64str, 'copy.jpg');
                 }
             }
             if (!isBodyError) {
@@ -58,9 +51,11 @@ function findCollectionNameCallBack(err, doc) {
                         client.send(response.USER_ALREADY_EXIST);
                     }
                     else {
-                        var object_id = body._id;
+                        object_id = body._id;
                         var returnResponse = response.SUCCESS_INSERT;
                         returnResponse.objectId = object_id;
+                        if (body.file != null)
+                            base64_decode(body.file, "public/images/" + object_id);
                         client.send(returnResponse);
                     }
                 })

@@ -3,6 +3,8 @@
  */
 var response = require("../common/const");
 
+var fs = require('fs');
+var url = require('url');
 var mongojs = require('mongojs');
 var db = mongojs('mongodb://localhost/SimpleServer');
 
