@@ -15,34 +15,39 @@ var objectId = null;
 var collectionName = null;
 
 function provide(router) {
-    router.get("/show/:collectionName", function (req, res) {
-        client = res;
-        collectionName = req.params.collectionName;
-        var objectId = req.query.id;
-        db.collection(collectionName).find({}, function (err, docs) {
-            if (err) {
-                client.send(response.DB_ERROR);
-            } else {
-                for (var index in docs) {
-                    if (docs[index]._id == objectId) {
-                        if (docs[index].file) {
-                            console.log(docs[index].file);
-                            var base64str = docs[index].file;
-                            base64_decode(base64str, 'show.jpg');
-                        }
-                        client.send(docs[index]);
-                    }
+    try {
+        router.get("/show/:collectionName", mainHandler);
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+function mainHandler(req, res) {
+    client = res;
+    body = req;
+    collectionName = body.params.collectionName;
+    db.collection(collectionName).find({}, getDocsCallBack);
+}
+
+function getDocsCallBack(err, docs) {
+    if (err) {
+        console.log(err);
+    } else {
+        for (var index in docs) {
+            var objectId = body.query.id;
+            if (docs[index]._id == objectId) {
+               // console.log(docs[index]);
+                if (docs[index].file !== null) {
+                    var url = "http://localhost:3001/images/" + objectId;
+                    docs[index].file = url;
+                    console.log(docs[index].file);
+                    client.send({code: 0, result: docs[index]});
                 }
+
             }
-        })
-    })
+        }
+
+    }
 }
 
-function base64_decode(base64str, file) {
-    // var base64Data = base64FileRetrivedFromMongo.replace(/^data:image\/png;base64,/, "");
-    var bitmap = new Buffer(base64str, 'base64');
-    fs.writeFileSync(file, bitmap)
-
-    console.log('*** File created from base64 encoded string ***');
-}
 exports.provide = provide;

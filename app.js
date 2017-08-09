@@ -15,6 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 var port = process.env.PORT || 3001;
 
 app.use(config.MAIN_API_URL, router);
+app.use(express.static('public'));
 
 var server = app.listen(3001, function () {
     console.log("Server is up and running")
