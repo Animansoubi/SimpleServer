@@ -4,14 +4,12 @@
 
 var response = require("../common/const");
 var fs = require('fs');
-var path = require('path');
-var url = require('url');
 var mongojs = require('mongojs');
+var mongo = require('mongodb');
 var db = mongojs('mongodb://localhost/SimpleServer');
 
 var client = null;
 var body = null;
-var objectId = null;
 var collectionName = null;
 
 function provide(router) {
@@ -26,25 +24,25 @@ function mainHandler(req, res) {
     client = res;
     body = req;
     collectionName = body.params.collectionName;
-    db.collection(collectionName).find({}, getDocsCallBack);
+    var o_id = new mongo.ObjectID(req.query.id);
+    console.log(o_id);
+    db.collection(collectionName).findOne({"_id": o_id}, getDocsCallBack);
 }
 
-function getDocsCallBack(err, docs) {
+function getDocsCallBack(err, doc) {
     if (err) {
         console.log(err);
     } else {
-        for (var index in docs) {
-            var objectId = body.query.id;
-            if (docs[index]._id == objectId) {
-               // console.log(docs[index]);
-                if (docs[index].file !== null) {
-                    var url = "http://localhost:3001/images/" + objectId;
-                    docs[index].file = url;
-                    console.log(docs[index].file);
-                    client.send({code: 0, result: docs[index]});
-                }
-
+        if (doc != null) {
+            console.log(doc);
+            if (typeof doc.file !== "undefined") {
+                var url = "http://localhost:3001/images/" + doc._id;
+                doc.file = url;
+                console.log(doc.file);
             }
+            client.send({code: 0, result: doc});
+        } else {
+            client.send("Invalid id")
         }
 
     }
