@@ -17,7 +17,7 @@ function provide(router) {
 }
 
 function collectionNamesCallBack(err, docs) {
-    var sent = false;
+    var sent = false
     if (err) {
         client.send(response.DB_ERROR);
     } else {

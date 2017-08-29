@@ -51,10 +51,16 @@ function findCollectionNameCallBack(err, doc) {
                 }
             }
             if (!isBodyError) {
-                console.log(typeof doc["custom_type"]);
-                console.log(typeof doc["custom_value"]);
-                if (typeof doc["custom_type"] !== "undefined") {
-                    if (typeof doc["custom_value"] !== "undefined") {
+                var hasCustomType = false;
+                for(index in doc.fields){
+                    if(doc.fields[index].name == "custom_type" && doc.fields[index].type == body["custom_type"]){
+                        hasCustomType = true;
+                        break;
+                    }
+                }
+
+                if (hasCustomType) {
+                    if (typeof body["custom_value"] !== "undefined") {
                         innerInsert();
                     } else {
                         client.send("Custom value is required");
